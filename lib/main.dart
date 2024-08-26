@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:untitled/veryfine.dart';
+import 'package:untitled/ver.dart';
+import 'package:untitled/ver2.dart';
 import 'login.dart';
 import 'register.dart';
 import 'home.dart';
@@ -50,15 +51,16 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: FirebaseAuth.instance.currentUser == null ||
+      home: FirebaseAuth.instance.currentUser != null &&
               FirebaseAuth.instance.currentUser!.emailVerified
-          ? Login()
-          : const Home(),
+          ? const Home()
+          : Login(),
       routes: {
         'login': (context) => Login(),
-        'register': (context) => Register(),
+        'register': (context) => const Register(),
         'home': (context) => const Home(),
-        'ver': (context) => const Veryfine(),
+        'ver' : (context) => const Ver(),
+        'ver2' : (context) => const Ver2(),
       },
     );
   }

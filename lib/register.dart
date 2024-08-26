@@ -1,15 +1,36 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'main.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:untitled/ver.dart';
 
 class Register extends StatefulWidget {
-  Register({super.key});
+  const Register({super.key});
 
   @override
   State<Register> createState() => _RegisterState();
 }
 
 class _RegisterState extends State<Register> {
+  final user = FirebaseAuth.instance.currentUser;
+
+  Future<UserCredential> signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
   final _emailkey1 = GlobalKey<FormState>();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
@@ -31,7 +52,7 @@ class _RegisterState extends State<Register> {
           child: ListView(
             children: [
               const SizedBox(
-                height: 60.0,
+                height: 20.0,
               ),
               SizedBox(
                   width: 120,
@@ -122,35 +143,33 @@ class _RegisterState extends State<Register> {
                 ),
               ),
               const SizedBox(
-                height: 40,
+                height: 20,
               ),
               MaterialButton(
                 onPressed: () async {
-                  if(s == false){
-                    FirebaseAuth.instance.currentUser!.sendEmailVerification();
-                  }
-                  if (FirebaseAuth.instance.currentUser!.emailVerified &&
-                      s == true) {
-                    Navigator.of(context).pushReplacementNamed('home');
-                    print('check done');
-                  } else {
-                    s = true;
-                    print('no check');
-                    // try {
-                    //   final credential = await FirebaseAuth.instance
-                    //       .createUserWithEmailAndPassword(
-                    //     email: _email.text,
-                    //     password: _password.text,
-                    //   );
-                    // } on FirebaseAuthException catch (e) {
-                    //   if (e.code == 'weak-password') {
-                    //     print('The password provided is too weak.');
-                    //   } else if (e.code == 'email-already-in-use') {
-                    //     print('The account already exists for that email.');
-                    //   }
-                    // } catch (e) {
-                    //   print(e);
-                    // }
+                  try {
+                    final f0 = FirebaseAuth.instance;
+                    final f1 = FirebaseAuth.instance.currentUser;
+                    final usercridint = await f0.createUserWithEmailAndPassword(
+                        email: _email.text, password: _password.text);
+                      await usercridint.user!.sendEmailVerification();
+                      Navigator.of(context).pushReplacementNamed('ver');
+                  } on FirebaseAuthException catch (e) {
+                    if (e.code == 'weak-password') {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        duration: Duration(seconds: 3),
+                        content: Text('The password provided is too weak.'),
+                      ));
+                    } else if (e.code == 'email-already-in-use') {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          duration: Duration(seconds: 3),
+                          content: Text(
+                              'The account already exists for that email.')));
+                    }
+                  } catch (e) {
+                    SnackBar(
+                      content: Text('$e'),
+                    );
                   }
                 },
                 child: Container(
@@ -191,7 +210,10 @@ class _RegisterState extends State<Register> {
                         )),
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      signInWithGoogle();
+                      Navigator.of(context).pushReplacementNamed('home');
+                    },
                     child: Container(
                         padding: const EdgeInsets.all(5),
                         width: 50,
