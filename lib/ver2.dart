@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Ver2 extends StatefulWidget {
+  final email;
+  final password;
   const Ver2({
-    super.key,
+    super.key, this.email, this.password,
   });
 
   @override
@@ -11,7 +13,6 @@ class Ver2 extends StatefulWidget {
 }
 
 class _Ver2State extends State<Ver2> {
-  String m = 'Send a massage';
   int t = 0;
 
   @override
@@ -36,12 +37,16 @@ class _Ver2State extends State<Ver2> {
             if (FirebaseAuth.instance.currentUser!.emailVerified) {
               Navigator.of(context).pushReplacementNamed('home');
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  duration: Duration(seconds: 3),
-                  content: Text('Please check your email')));
               if (t == 1) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    duration: Duration(seconds: 3),
+                    content: Text('Error: re-create your email')));
                 FirebaseAuth.instance.signOut();
                 Navigator.of(context).pushReplacementNamed('login');
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    duration: Duration(seconds: 3),
+                    content: Text('Please check your email')));
               }
               t++;
             }
@@ -53,9 +58,9 @@ class _Ver2State extends State<Ver2> {
                 color: Colors.black),
             height: 40,
             width: 220,
-            child: Text(
-              'Tap to $m',
-              style: const TextStyle(
+            child: const Text(
+              'Tap to Next page',
+              style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
                   color: Colors.white),

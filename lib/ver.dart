@@ -3,8 +3,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class Ver extends StatefulWidget {
+  final email;
+  final password;
+
   const Ver({
     super.key,
+    this.email,
+    this.password,
   });
 
   @override
@@ -32,17 +37,44 @@ class _VerState extends State<Ver> {
       ),
       body: Center(
         child: InkWell(
-          onTap: () {
+          onTap: () async {
+            try {
+              final f0 = FirebaseAuth.instance;
+              final f1 = FirebaseAuth.instance.currentUser;
+              final usercridint = await f0.createUserWithEmailAndPassword(
+                  email: widget.email, password: widget.password);
+              await usercridint.user!.sendEmailVerification();
+            } on FirebaseAuthException catch (e) {
+              if (e.code == 'weak-password') {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  duration: Duration(seconds: 3),
+                  content: Text('The password provided is too weak.'),
+                ));
+              } else if (e.code == 'email-already-in-use') {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    duration: Duration(seconds: 3),
+                    content: Text(
+                        'The account already exists for that email.')));
+              }
+            } catch (e) {
+              SnackBar(
+                content: Text('$e'),
+              );
+            }
             setState(() {});
             if (FirebaseAuth.instance.currentUser!.emailVerified) {
               Navigator.of(context).pushReplacementNamed('home');
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  duration: Duration(seconds: 3),
-                  content: Text('Please check your email')));
               if (t == 1) {
-                FirebaseAuth.instance.currentUser!.delete();
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    duration: Duration(seconds: 3),
+                    content: Text('Error: re-create your email')));
+                FirebaseAuth.instance.signOut();
                 Navigator.of(context).pushReplacementNamed('login');
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    duration: Duration(seconds: 3),
+                    content: Text('Please check your email')));
               }
               t++;
             }

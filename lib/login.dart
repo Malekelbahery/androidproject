@@ -138,24 +138,17 @@ class _LoginState extends State<Login> {
               MaterialButton(
                 onPressed: () async {
                   try {
-                    final f0 = FirebaseAuth.instance;
-                    final f1 = FirebaseAuth.instance.currentUser;
-                    final userCarint = await f0.createUserWithEmailAndPassword(
-                        email: _email1.text, password: _password1.text);
-                    if (f1!.emailVerified) {
-                      f1.sendEmailVerification();
-                      Navigator.of(context).pushReplacementNamed('ver2');
-                    }
+                    final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                        email: _email1.text,
+                        password: _password1.text
+                    );
+                    FirebaseAuth.instance.currentUser!.sendEmailVerification();
+                    Navigator.of(context).pushReplacementNamed('ver2');
                   } on FirebaseAuthException catch (e) {
                     if (e.code == 'user-not-found') {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          duration: Duration(seconds: 3),
-                          content: Text('No user found for that email.')));
+                      print('No user found for that email.');
                     } else if (e.code == 'wrong-password') {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          duration: Duration(seconds: 3),
-                          content:
-                              Text('Wrong password provided for that user.')));
+                      print('Wrong password provided for that user.');
                     }
                   }
                 },
