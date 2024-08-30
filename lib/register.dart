@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:untitled/ver.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -150,39 +147,25 @@ class _RegisterState extends State<Register> {
               MaterialButton(
                 onPressed: () async {
                   try {
-                    if (t == 0) {
+                    if(t == 0){
                       final credential = await FirebaseAuth.instance
                           .createUserWithEmailAndPassword(
-                              email: _email.text, password: _password.text);
-                      FirebaseAuth.instance.currentUser!
-                          .sendEmailVerification();
+                          email: _email.text, password: _password.text);
+                      FirebaseAuth.instance.currentUser!.sendEmailVerification();
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           duration: Duration(seconds: 3),
                           content: Text('please check your email')));
                     }
                     t++;
-                    if (FirebaseAuth.instance.currentUser!.emailVerified) {
-                      Navigator.of(context).pushReplacementNamed('home');
+                    if (t == 2) {
+                      Navigator.of(context).pushReplacementNamed('login');
+                      final credential = await FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                          email: _email.text, password: _password.text);
+                      FirebaseAuth.instance.currentUser!.sendEmailVerification();
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           duration: Duration(seconds: 3),
-                          content: Text(
-                            'Success to create an acount',
-                            style: TextStyle(color: Colors.green),
-                          )));
-                    } else {
-                      if (t >= 3) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                duration: Duration(seconds: 3),
-                                content: Text('error: re-create an acount')));
-                        t = 0;
-                        FirebaseAuth.instance.currentUser!.delete();
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                duration: Duration(seconds: 3),
-                                content: Text('please check your email')));
-                      }
+                          content: Text('login to Next page')));
                     }
                   } on FirebaseAuthException catch (e) {
                     if (e.code == 'weak-password') {

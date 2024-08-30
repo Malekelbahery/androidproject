@@ -138,17 +138,28 @@ class _LoginState extends State<Login> {
               MaterialButton(
                 onPressed: () async {
                   try {
-                    final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                        email: _email1.text,
-                        password: _password1.text
-                    );
-                    FirebaseAuth.instance.currentUser!.sendEmailVerification();
-                    Navigator.of(context).pushReplacementNamed('ver2');
+                    final credential = await FirebaseAuth.instance
+                        .signInWithEmailAndPassword(
+                            email: _email1.text, password: _password1.text);
+                    if (FirebaseAuth.instance.currentUser!.emailVerified) {
+                      Navigator.of(context).pushReplacementNamed('home');
+                    } else {
+                      FirebaseAuth.instance.currentUser!
+                          .sendEmailVerification();
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          duration: Duration(seconds: 3),
+                          content: Text('please check your email')));
+                    }
                   } on FirebaseAuthException catch (e) {
                     if (e.code == 'user-not-found') {
-                      print('No user found for that email.');
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          duration: Duration(seconds: 3),
+                          content: Text('No user found for that email.')));
                     } else if (e.code == 'wrong-password') {
-                      print('Wrong password provided for that user.');
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          duration: Duration(seconds: 3),
+                          content:
+                              Text('Wrong password provided for that user.')));
                     }
                   }
                 },
