@@ -23,7 +23,6 @@ class _RegisterState extends State<Register> {
       appBar: AppBar(
         title: const Text(
           'Sign Up',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
         ),
       ),
       body: Padding(

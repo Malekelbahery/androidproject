@@ -11,7 +11,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-
   final GlobalKey<FormState> _emailkey = GlobalKey<FormState>();
   final TextEditingController _email1 = TextEditingController();
   final TextEditingController _password1 = TextEditingController();
@@ -22,7 +21,6 @@ class _LoginState extends State<Login> {
       appBar: AppBar(
         title: const Text(
           'Login',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
         ),
       ),
       body: Padding(

@@ -13,10 +13,19 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed('add');
+        },
+        backgroundColor: Colors.black,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
       appBar: AppBar(
         title: const Text(
           'Home',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
         ),
       ),
       drawer: Drawer(
@@ -25,7 +34,7 @@ class _HomeState extends State<Home> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             InkWell(
-              onTap: () async{
+              onTap: () async {
                 await FirebaseAuth.instance.signOut();
                 Navigator.of(context).pushReplacementNamed('login');
                 t = false;
@@ -51,6 +60,36 @@ class _HomeState extends State<Home> {
               height: 50,
             ),
           ],
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GridView.builder(
+          itemCount: 2,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2),
+          itemBuilder: (context, index) => Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                color: Colors.grey.shade50,
+                boxShadow: const [
+                  BoxShadow(color: Colors.grey, offset: Offset(0, 2))
+                ]),
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              children: [
+                Image.asset('images/F100.png'),
+                const SizedBox(
+                  height: 20,
+                ),
+                const Text(
+                  'flutter man',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:untitled/categories/add.dart';
 import 'login.dart';
 import 'register.dart';
 import 'home.dart';
@@ -46,6 +47,8 @@ class _MyAppState extends State<MyApp> {
         appBarTheme: const AppBarTheme(
           centerTitle: true,
           backgroundColor: Colors.white,
+          titleTextStyle: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 25.0, color: Colors.black),
         ),
       ),
       debugShowCheckedModeBanner: false,
@@ -57,6 +60,7 @@ class _MyAppState extends State<MyApp> {
         'login': (context) => Login(),
         'register': (context) => const Register(),
         'home': (context) => const Home(),
+        'add': (context) => const AddCotegory(),
       },
     );
   }
