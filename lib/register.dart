@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'Abbreviations/textform.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -65,65 +66,47 @@ class _RegisterState extends State<Register> {
                   key: _emailkey1,
                   child: Column(
                     children: [
-                      TextFormField(
-                        keyboardType: TextInputType.name,
-                        controller: _name,
-                        decoration: const InputDecoration(
-                          hintText: 'username',
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                            borderSide:
-                                BorderSide(color: Colors.black, width: 2.5),
-                          ),
-                        ),
+                      CustomText(
+                        controll: _name,
+                        text: 'username',
+                        validator: (val) {
+                          if (val == '') {
+                            return 'please entre the password';
+                          }
+                          return null;
+                        },
+                        type: TextInputType.name,
+                        passwordtf: false,
                       ),
                       const SizedBox(
                         height: 8.0,
                       ),
-                      TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        controller: _email,
-                        decoration: const InputDecoration(
-                          hintText: 'email',
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                            borderSide:
-                                BorderSide(color: Colors.black, width: 2.5),
-                          ),
-                        ),
+                      CustomText(
+                        controll: _email,
+                        text: 'email',
+                        validator: (val) {
+                          if (val == '') {
+                            return 'please entre the password';
+                          }
+                          return null;
+                        },
+                        type: TextInputType.emailAddress,
+                        passwordtf: false,
                       ),
                       const SizedBox(
                         height: 8.0,
                       ),
-                      TextFormField(
-                        obscureText: true,
-                        keyboardType: TextInputType.visiblePassword,
-                        controller: _password,
-                        decoration: const InputDecoration(
-                          hintText: 'password',
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15.0)),
-                              borderSide:
-                                  BorderSide(color: Colors.black, width: 2.5)),
-                        ),
+                      CustomText(
+                        controll: _password,
+                        text: 'password',
+                        validator: (val) {
+                          if (val == '') {
+                            return 'please entre the password';
+                          }
+                          return null;
+                        },
+                        type: TextInputType.visiblePassword,
+                        passwordtf: true,
                       ),
                     ],
                   )),
@@ -144,29 +127,38 @@ class _RegisterState extends State<Register> {
               ),
               MaterialButton(
                 onPressed: () async {
-                  try {
-                    final credential = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                            email: _email.text, password: _password.text);
-                    FirebaseAuth.instance.currentUser!.sendEmailVerification();
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        duration: Duration(seconds: 3),
-                        content: Text('please check your email')));
-                    Navigator.of(context).pushReplacementNamed('login');
-                  } on FirebaseAuthException catch (e) {
-                    if (e.code == 'weak-password') {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        duration: Duration(seconds: 3),
-                        content: Text('The password provided is too weak.'),
-                      ));
-                    } else if (e.code == 'email-already-in-use') {
+                  if (_emailkey1.currentState!.validate()) {
+                    try {
+                      final credential = await FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                              email: _email.text, password: _password.text);
+                      FirebaseAuth.instance.currentUser!
+                          .sendEmailVerification();
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           duration: Duration(seconds: 3),
-                          content: Text(
-                              'The account already exists for that email.')));
+                          content: Text('please check your email')));
+                      Navigator.of(context).pushReplacementNamed('login');
+                    } on FirebaseAuthException catch (e) {
+                      if (e.code == 'weak-password') {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(const SnackBar(
+                          duration: Duration(seconds: 3),
+                          content: Text('The password provided is too weak.'),
+                        ));
+                      } else if (e.code == 'email-already-in-use') {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            duration: Duration(seconds: 3),
+                            content: Text(
+                                'The account already exists for that email.')));
+                      }
+                    } catch (e) {
+                      print(e);
                     }
-                  } catch (e) {
-                    print(e);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        duration: Duration(seconds: 3),
+                        content:
+                            Text('Enter your name and email and password')));
                   }
                 },
                 child: Container(
