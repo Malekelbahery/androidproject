@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:untitled/Abbreviations/googlebutton.dart';
 import 'Abbreviations/textform.dart';
 
 class Register extends StatefulWidget {
@@ -11,24 +11,6 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  Future<UserCredential> signInWithGoogle() async {
-    // Trigger the authentication flow
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-    // Obtain the auth details from the request
-    final GoogleSignInAuthentication? googleAuth =
-        await googleUser?.authentication;
-
-    // Create a new credential
-    final credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
-
-    // Once signed in, return the UserCredential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
   final _emailkey1 = GlobalKey<FormState>();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _email = TextEditingController();
@@ -180,59 +162,7 @@ class _RegisterState extends State<Register> {
               const SizedBox(
                 height: 50,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  InkWell(
-                    onTap: () {},
-                    child: Container(
-                        padding: const EdgeInsets.all(5),
-                        width: 50,
-                        height: 50,
-                        decoration: const BoxDecoration(
-                            color: Colors.black,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                        child: Image.asset(
-                          'images/A100.png',
-                          fit: BoxFit.cover,
-                        )),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      signInWithGoogle();
-                      Navigator.of(context).pushReplacementNamed('home');
-                    },
-                    child: Container(
-                        padding: const EdgeInsets.all(5),
-                        width: 50,
-                        height: 50,
-                        decoration: const BoxDecoration(
-                            color: Colors.black,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                        child: Image.asset(
-                          'images/G40.png',
-                          fit: BoxFit.cover,
-                        )),
-                  ),
-                  InkWell(
-                    onTap: () {},
-                    child: Container(
-                        padding: const EdgeInsets.all(5),
-                        width: 50,
-                        height: 50,
-                        decoration: const BoxDecoration(
-                            color: Colors.black,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                        child: Image.asset(
-                          'images/FC100.png',
-                          fit: BoxFit.cover,
-                        )),
-                  ),
-                ],
-              )
+              const Googlebutton()
             ],
           ),
         ),
