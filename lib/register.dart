@@ -10,8 +10,6 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  int t = 0;
-
   Future<UserCredential> signInWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
@@ -147,26 +145,14 @@ class _RegisterState extends State<Register> {
               MaterialButton(
                 onPressed: () async {
                   try {
-                    if(t == 0){
-                      final credential = await FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                          email: _email.text, password: _password.text);
-                      FirebaseAuth.instance.currentUser!.sendEmailVerification();
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          duration: Duration(seconds: 3),
-                          content: Text('please check your email')));
-                    }
-                    t++;
-                    if (t == 2) {
-                      Navigator.of(context).pushReplacementNamed('login');
-                      final credential = await FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                          email: _email.text, password: _password.text);
-                      FirebaseAuth.instance.currentUser!.sendEmailVerification();
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          duration: Duration(seconds: 3),
-                          content: Text('login to Next page')));
-                    }
+                    final credential = await FirebaseAuth.instance
+                        .createUserWithEmailAndPassword(
+                            email: _email.text, password: _password.text);
+                    FirebaseAuth.instance.currentUser!.sendEmailVerification();
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        duration: Duration(seconds: 3),
+                        content: Text('please check your email')));
+                    Navigator.of(context).pushReplacementNamed('login');
                   } on FirebaseAuthException catch (e) {
                     if (e.code == 'weak-password') {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -180,9 +166,7 @@ class _RegisterState extends State<Register> {
                               'The account already exists for that email.')));
                     }
                   } catch (e) {
-                    SnackBar(
-                      content: Text('$e'),
-                    );
+                    print(e);
                   }
                 },
                 child: Container(

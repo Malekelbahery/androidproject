@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:untitled/ver.dart';
-import 'package:untitled/ver2.dart';
 import 'login.dart';
 import 'register.dart';
 import 'home.dart';
@@ -59,8 +57,6 @@ class _MyAppState extends State<MyApp> {
         'login': (context) => Login(),
         'register': (context) => const Register(),
         'home': (context) => const Home(),
-        'ver' : (context) => const Ver(),
-        'ver2' : (context) => const Ver2(),
       },
     );
   }

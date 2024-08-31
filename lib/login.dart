@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:untitled/ver.dart';
-import 'package:untitled/ver2.dart';
 
 class Login extends StatefulWidget {
   Login({super.key});
@@ -141,11 +139,16 @@ class _LoginState extends State<Login> {
                     final credential = await FirebaseAuth.instance
                         .signInWithEmailAndPassword(
                             email: _email1.text, password: _password1.text);
-                    if (FirebaseAuth.instance.currentUser!.emailVerified) {
+                    if (FirebaseAuth.instance.currentUser != null &&
+                        FirebaseAuth.instance.currentUser!.emailVerified) {
                       Navigator.of(context).pushReplacementNamed('home');
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          duration: Duration(seconds: 3),
+                          content: Text(
+                            'Login successfull',
+                            style: TextStyle(color: Colors.green),
+                          )));
                     } else {
-                      FirebaseAuth.instance.currentUser!
-                          .sendEmailVerification();
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           duration: Duration(seconds: 3),
                           content: Text('please check your email')));
